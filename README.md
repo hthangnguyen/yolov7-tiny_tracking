@@ -4,7 +4,7 @@ C++ implement of YOLOv7-tiny for detection and SORT (Simple Online Real Time) tr
 Use opencv to read ONNX model and predict objects
 Then track the objects using Munkres algorithm
 
-Acknowledment:
+**References**:
 
 https://github.com/WongKinYiu/yolov7
 
