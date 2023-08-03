@@ -10,7 +10,7 @@
 #include "tracker.h"
 #include "utils.h"
 
-std::vector<std::string> classNames = {"car", "truck", "bus", "human", "motorbike", "bicycle"};
+std::vector<std::string> classNames = {"your", "classes", "names"};
 const cv::Scalar color = cv::Scalar(255, 255, 0);
 const float INPUT_WIDTH = 640.0;
 const float INPUT_HEIGHT = 640.0;
@@ -25,7 +25,7 @@ struct Detection
     cv::Rect_<float> box;
 };
 
-cv::Mat format_yolov5(const cv::Mat& source) {
+cv::Mat to_yolo_format(const cv::Mat& source) {
     int col = source.cols;
     int row = source.rows;
     int _max = MAX(col, row);
@@ -36,7 +36,7 @@ cv::Mat format_yolov5(const cv::Mat& source) {
 
 void detect(cv::dnn::Net network, cv::Mat &img, std::vector<Detection>& output, bool draw = false)
 {
-    auto input_image = format_yolov5(img);
+    auto input_image = to_yolo_format(img);
     cv::Mat blob;
     cv::dnn::blobFromImage(input_image, blob, 1. / 255., cv::Size(INPUT_WIDTH, INPUT_HEIGHT), cv::Scalar(), true, false);
     network.setInput(blob);
@@ -46,8 +46,8 @@ void detect(cv::dnn::Net network, cv::Mat &img, std::vector<Detection>& output, 
 
     float* data = (float*)outputs[0].data;
 
-    const int dimensions = 11;
-    const int rows = 25200;
+    int obj_size = outputs[0].size[2];    // number of classes + 5
+    int dets = outputs[0].size[1];        // number of detections
 
     float x_factor = input_image.cols / INPUT_WIDTH;
     float y_factor = input_image.rows / INPUT_HEIGHT;
@@ -56,7 +56,7 @@ void detect(cv::dnn::Net network, cv::Mat &img, std::vector<Detection>& output, 
     std::vector<float> confidences;
     std::vector<cv::Rect> boxes;
 
-    for (int i = 0; i < rows; ++i) {
+    for (int i = 0; i < dets; ++i) {
 
         float confidence = data[4];
         if (confidence >= CONFIDENCE_THRESHOLD) {
@@ -85,7 +85,7 @@ void detect(cv::dnn::Net network, cv::Mat &img, std::vector<Detection>& output, 
 
         }
 
-        data += dimensions;
+        data += obj_size;
 
     }
     std::vector<int> nms_result;
