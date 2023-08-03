@@ -113,14 +113,14 @@ void detect(cv::dnn::Net network, cv::Mat &img, std::vector<Detection>& output, 
 
 int main()
 {
-    std::string video = "tracking_test.mp4";
+    std::string video = "/path/to/video/";
 
     cv::VideoCapture cap(video);
     if (!cap.isOpened()) {
         std::cerr << "Error opening video file\n";
         return -1;
     }
-    std::string model = "for_trackingv5n.onnx";
+    std::string model = "/path/to/weight/file/weight.onnx";
     auto results = cv::dnn::readNet(model);
     std::vector<Detection> output;
     results.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
