@@ -127,7 +127,7 @@ int main()
     results.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 
     cv::dnn::Net network = results;
-    auto start = std::chrono::high_resolution_clock::now();
+    
     // cv::VideoWriter outcap("tracking_output.mp4", cv::VideoWriter::fourcc('M', 'P', '4', 'V'), 10, cv::Size(960, 960));
 
     Tracker tracker;
@@ -158,7 +158,6 @@ int main()
             }
         }
 
-        std::string rst = "det num = " + std::to_string(output.size()) + ", trk num = " + std::to_string(tracks.size());
         cv::putText(frame, rst, cv::Point(0, 50), cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(0, 0, 255), 2);
         cv::imshow("result", frame);
         char c = (char)cv::waitKey(0);
